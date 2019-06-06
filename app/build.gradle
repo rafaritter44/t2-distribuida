@@ -1,0 +1,28 @@
+apply plugin: "application"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets {
+    main.java.srcDirs = ["src/main/java"]
+}
+
+mainClassName = "br.pucrs.distribuida.t2.Main"
+
+task fatJar(type: Jar) {
+	manifest {
+		attributes(
+			'Main-Class': mainClassName
+		)
+	}
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
