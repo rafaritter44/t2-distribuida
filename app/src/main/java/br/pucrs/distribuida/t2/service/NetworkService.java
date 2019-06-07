@@ -7,11 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.google.inject.Singleton;
-
 import br.pucrs.distribuida.t2.node.Node;
 
-@Singleton
 public class NetworkService {
 	
 	private static final int PACKET_LENGTH = 1024;

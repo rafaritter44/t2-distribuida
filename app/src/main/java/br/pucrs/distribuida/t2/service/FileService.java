@@ -5,9 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.google.inject.Singleton;
-
-@Singleton
 public class FileService {
 	
 	public List<String> readAllLines(String file) {
