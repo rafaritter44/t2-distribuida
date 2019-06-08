@@ -7,7 +7,7 @@ sourceSets {
     main.java.srcDirs = ["src/main/java"]
 }
 
-mainClassName = "br.pucrs.distribuida.t2.Main"
+mainClassName = "br.pucrs.distribuida.t2.MainRunner"
 
 task fatJar(type: Jar) {
 	manifest {

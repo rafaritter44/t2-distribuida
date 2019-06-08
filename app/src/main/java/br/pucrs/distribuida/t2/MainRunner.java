@@ -7,7 +7,7 @@ import br.pucrs.distribuida.t2.module.FileModule;
 import br.pucrs.distribuida.t2.module.NetworkModule;
 import br.pucrs.distribuida.t2.module.NodeModule;
 
-public class Main {
+public class MainRunner {
 	
 	private static final int FILE = 0;
 	private static final int LINE = 1;
