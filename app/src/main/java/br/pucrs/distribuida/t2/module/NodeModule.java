@@ -1,5 +1,6 @@
 package br.pucrs.distribuida.t2.module;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class NodeModule extends AbstractModule {
 	
 	private NodeService nodeService() {
 		List<Node> nodes = toNodes(fileService.readAllLines(file));
+		setCoordinator(nodes);
 		Node self = self(nodes);
 		return new NodeService(self, nodes);
 	}
@@ -55,6 +57,12 @@ public class NodeModule extends AbstractModule {
 		String host = splittedLine[HOST];
 		Integer port = Integer.parseInt(splittedLine[PORT]);
 		return new Node(id, host, port);
+	}
+	
+	private void setCoordinator(List<Node> nodes) {
+		nodes.stream()
+				.max(Comparator.comparing(Node::getId))
+				.ifPresent(node -> node.setCoordinator(Boolean.TRUE));
 	}
 	
 	private Node self(List<Node> nodes) {
