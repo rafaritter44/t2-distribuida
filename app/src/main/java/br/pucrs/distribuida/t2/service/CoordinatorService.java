@@ -35,7 +35,11 @@ public class CoordinatorService {
 	
 	private void run() {
 		while (true) {
-			handle(networkService.receive());
+			try {
+				handle(networkService.receive());
+			} catch(NodeNotFoundException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 	
@@ -50,7 +54,8 @@ public class CoordinatorService {
 	
 	private Node getSender(Request request) throws NodeNotFoundException {
 		return nodeService.find(request.getHost(), request.getPort())
-				.orElseThrow(() -> new NodeNotFoundException("Unknown node."));
+				.orElseThrow(() -> new NodeNotFoundException(
+						"Unknown node: %s:%s", request.getHost(), request.getPort()));
 	}
 	
 	private void lock(Node node) {
