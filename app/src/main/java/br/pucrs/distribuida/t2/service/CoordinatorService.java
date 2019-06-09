@@ -12,6 +12,13 @@ import br.pucrs.distribuida.t2.model.Request;
 @Singleton
 public class CoordinatorService {
 	
+	public static final String LOCK = "lock";
+	public static final String UNLOCK = "unlock";
+	public static final String GRANTED = "granted";
+	public static final String DENIED = "denied";
+	public static final String UNLOCKED = "unlocked";
+	public static final String WAS_NOT_GRANTED = "was not granted";
+	
 	private final NodeService nodeService;
 	private final NetworkService networkService;
 	private final Thread runnable;
@@ -46,8 +53,8 @@ public class CoordinatorService {
 	private synchronized void handle(Request request) throws NodeNotFoundException {
 		Node sender = getSender(request);
 		switch (request.getMessage()) {
-			case "lock": lock(sender); break;
-			case "unlock": unlock(sender); break;
+			case LOCK: lock(sender); break;
+			case UNLOCK: unlock(sender); break;
 			default: networkService.send("unknown command", sender);
 		}
 	}
@@ -69,19 +76,19 @@ public class CoordinatorService {
 	private void unlock(Node node) {
 		if (isAuthorized(node)) {
 			unauthorize();
-			networkService.send("ok", node);
+			networkService.send(UNLOCKED, node);
 		} else {
-			networkService.send("was not granted", node);
+			networkService.send(WAS_NOT_GRANTED, node);
 		}
 	}
 	
 	private void grant(Node node) {
 		authorize(node);
-		networkService.send("granted", node);
+		networkService.send(GRANTED, node);
 	}
 	
 	private void deny(Node node) {
-		networkService.send("denied", node);
+		networkService.send(DENIED, node);
 	}
 	
 	private void authorize(Node node) {
