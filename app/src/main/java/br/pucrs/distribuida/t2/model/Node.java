@@ -1,4 +1,4 @@
-package br.pucrs.distribuida.t2.node;
+package br.pucrs.distribuida.t2.model;
 
 public class Node {
 	
@@ -12,6 +12,10 @@ public class Node {
 		this.host = host;
 		this.port = port;
 		setCoordinator(Boolean.FALSE);
+	}
+	
+	public boolean same(String host, Integer port) {
+		return this.host.equals(host) && this.port.equals(port);
 	}
 	
 	public Integer getId() {

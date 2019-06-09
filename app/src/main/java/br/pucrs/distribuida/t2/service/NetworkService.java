@@ -7,7 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import br.pucrs.distribuida.t2.node.Node;
+import br.pucrs.distribuida.t2.model.Node;
+import br.pucrs.distribuida.t2.model.Request;
 
 public class NetworkService {
 	
@@ -50,10 +51,10 @@ public class NetworkService {
 		}
 	}
 	
-	public String receive() {
+	public Request receive() {
 		DatagramPacket packet = new DatagramPacket(new byte[PACKET_LENGTH], PACKET_LENGTH);
 		receive(packet);
-		return new String(packet.getData());
+		return requestFrom(packet);
 	}
 	
 	private void receive(DatagramPacket packet) {
@@ -63,6 +64,13 @@ public class NetworkService {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+	
+	private Request requestFrom(DatagramPacket packet) {
+		String message = new String(packet.getData());
+		String host = packet.getAddress().getHostAddress();
+		Integer port = packet.getPort();
+		return new Request(message, host, port);
 	}
 	
 }

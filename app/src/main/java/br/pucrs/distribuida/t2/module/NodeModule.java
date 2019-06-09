@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.google.inject.AbstractModule;
 
-import br.pucrs.distribuida.t2.node.Node;
+import br.pucrs.distribuida.t2.model.Node;
 import br.pucrs.distribuida.t2.service.FileService;
 import br.pucrs.distribuida.t2.service.NodeService;
 
