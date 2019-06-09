@@ -44,7 +44,7 @@ public class CoordinatorService {
 		while (true) {
 			try {
 				handle(networkService.receive());
-			} catch(NodeNotFoundException e) {
+			} catch (NodeNotFoundException e) {
 				System.out.println(e.getMessage());
 			}
 		}
