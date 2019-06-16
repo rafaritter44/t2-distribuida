@@ -2,6 +2,7 @@ package br.pucrs.distribuida.t2.service;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,12 +28,10 @@ public class RandomRequestService extends AbstractRSocket {
 	public void start() {
 		while (true) {
 			wait(threeToSixSeconds());
-			try {
-				sendToCoordinator(lockOrUnlock());
-			} catch (RuntimeException e) {
+			sendToCoordinator(lockOrUnlock(), ifCoordinatorIsOOS -> {
 				System.out.println("Coordinator is oos!");
 				bullyService.callElection();
-			}
+			});
 		}
 	}
 	
@@ -49,8 +48,8 @@ public class RandomRequestService extends AbstractRSocket {
 		return random.nextInt(4) + 3;
 	}
 	
-	private void sendToCoordinator(String message) {
-		clientService.send(message, nodeService.getCoordinator());
+	private void sendToCoordinator(String message, Consumer<? super Throwable> fallback) {
+		clientService.send(message, nodeService.getCoordinator(), fallback);
 	}
 	
 	private String lockOrUnlock() {
