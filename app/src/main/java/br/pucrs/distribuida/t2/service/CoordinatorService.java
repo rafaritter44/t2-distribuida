@@ -19,9 +19,6 @@ public class CoordinatorService {
 	public static final String UNLOCKED = "unlocked";
 	public static final String WAS_NOT_GRANTED = "was not granted";
 	
-	private static final int IP = 0;
-	private static final int PORT = 1;
-	
 	private final NodeService nodeService;
 	private final ClientService clientService;
 	private Optional<Node> authorized;
@@ -47,18 +44,13 @@ public class CoordinatorService {
 		return running;
 	}
 	
-	public synchronized void handle(Payload payload) throws NodeNotFoundException {
-		String[] ipAndPort = payload.getMetadataUtf8().split(":");
-		Node sender = getSender(ipAndPort[IP], Integer.parseInt(ipAndPort[PORT]));
+	public synchronized boolean handle(Payload payload) throws NodeNotFoundException {
+		Node sender = nodeService.getSender(payload);
 		switch (payload.getDataUtf8()) {
-			case LOCK: lock(sender); break;
-			case UNLOCK: unlock(sender); break;
+			case LOCK: lock(sender); return true;
+			case UNLOCK: unlock(sender); return true;
+			default: return false;
 		}
-	}
-	
-	private Node getSender(String ip, int port) throws NodeNotFoundException {
-		return nodeService.find(ip, port)
-				.orElseThrow(() -> new NodeNotFoundException("Unknown node: %s:%s", ip, port));
 	}
 	
 	private void lock(Node node) {

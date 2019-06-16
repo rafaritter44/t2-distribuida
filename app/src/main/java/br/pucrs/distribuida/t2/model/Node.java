@@ -18,6 +18,10 @@ public class Node {
 		return this.host.equals(host) && this.port.equals(port);
 	}
 	
+	public boolean sameAs(Node other) {
+		return same(other.getHost(), other.getPort());
+	}
+	
 	public Integer getId() {
 		return id;
 	}

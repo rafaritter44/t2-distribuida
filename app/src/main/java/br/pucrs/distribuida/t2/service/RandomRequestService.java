@@ -13,12 +13,14 @@ public class RandomRequestService extends AbstractRSocket {
 	
 	private final NodeService nodeService;
 	private final ClientService clientService;
+	private final BullyService bullyService;
 	private final Random random;
 	
 	@Inject
-	public RandomRequestService(NodeService nodeService, ClientService clientService) {
+	public RandomRequestService(NodeService nodeService, ClientService clientService, BullyService bullyService) {
 		this.nodeService = nodeService;
 		this.clientService = clientService;
+		this.bullyService = bullyService;
 		random = new Random();
 	}
 	
@@ -29,6 +31,7 @@ public class RandomRequestService extends AbstractRSocket {
 				sendToCoordinator(lockOrUnlock());
 			} catch (RuntimeException e) {
 				System.out.println("Coordinator is oos!");
+				bullyService.callElection();
 			}
 		}
 	}

@@ -19,6 +19,7 @@ public class ClientService {
 	}
 	
 	public void send(String message, Node receiver) {
+		System.out.println(String.format("Sent '%s' to node %d", message, receiver.getId()));
 		RSocketFactory.connect()
 				.transport(TcpClientTransport.create(receiver.getHost(), receiver.getPort()))
 				.start()
