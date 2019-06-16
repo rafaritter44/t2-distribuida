@@ -28,10 +28,12 @@ public class RandomRequestService extends AbstractRSocket {
 	public void start() {
 		while (true) {
 			wait(threeToSixSeconds());
-			sendToCoordinator(lockOrUnlock(), ifCoordinatorIsOOS -> {
-				System.out.println("Coordinator is oos!");
-				bullyService.callElection();
-			});
+			if (!bullyService.calledElection()) {
+				sendToCoordinator(lockOrUnlock(), ifCoordinatorIsOOS -> {
+					System.out.println("Coordinator is oos!");
+					bullyService.callElection();
+				});
+			}
 		}
 	}
 	

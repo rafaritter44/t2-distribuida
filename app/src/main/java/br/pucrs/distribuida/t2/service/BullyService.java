@@ -54,7 +54,7 @@ public class BullyService {
 		if (wonElection) {
 			nodeService.setCoordinator(nodeService.getSelf());
 			coordinatorService.start();
-			nodeService.getNodes().forEach(node -> clientService.send(I_AM_COORDINATOR, node));
+			nodeService.allNodesButMe().forEach(node -> clientService.send(I_AM_COORDINATOR, node));
 			wonElection = Boolean.FALSE;
 		}
 		calledElection = Boolean.FALSE;

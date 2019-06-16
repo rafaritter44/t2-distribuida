@@ -25,8 +25,10 @@ public class NodeService {
 		return self;
 	}
 	
-	public List<Node> getNodes() {
-		return nodes;
+	public List<Node> allNodesButMe() {
+		return nodes.stream()
+				.filter(node -> !node.sameAs(self))
+				.collect(Collectors.toList());
 	}
 	
 	public void setCoordinator(Node coordinator) {
