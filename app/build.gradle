@@ -24,5 +24,17 @@ repositories {
 }
 
 dependencies {
+	def rsocketVersion = '0.12.1'
+	compile group: 'io.rsocket', name: 'rsocket-core', version: rsocketVersion
+	compile group: 'io.rsocket', name: 'rsocket-transport-netty', version: rsocketVersion
 	compile group: 'com.google.inject', name: 'guice', version: '4.2.2'
+	def karyonVersion = '2.8.2'
+	compile(['com.netflix.karyon:karyon2-core:' + karyonVersion,
+			 'com.netflix.karyon:karyon2-jersey-blocking:' + karyonVersion,
+			 'com.netflix.karyon:karyon2-archaius:' + karyonVersion,
+			 'com.netflix.karyon:karyon2-servo:' + karyonVersion,
+			 'com.netflix.karyon:karyon2-admin-web:' + karyonVersion,
+			 'com.netflix.karyon:karyon2-eureka:' + karyonVersion,
+			 'javax.annotation:javax.annotation-api:1.3.2'
+	 		 ])
 }

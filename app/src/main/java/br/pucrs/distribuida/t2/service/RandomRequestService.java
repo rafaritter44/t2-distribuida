@@ -6,25 +6,30 @@ import java.util.concurrent.TimeUnit;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import io.rsocket.AbstractRSocket;
+
 @Singleton
-public class RandomRequestService {
+public class RandomRequestService extends AbstractRSocket {
 	
 	private final NodeService nodeService;
-	private final NetworkService networkService;
+	private final ClientService clientService;
 	private final Random random;
 	
 	@Inject
-	public RandomRequestService(NodeService nodeService, NetworkService networkService) {
+	public RandomRequestService(NodeService nodeService, ClientService clientService) {
 		this.nodeService = nodeService;
-		this.networkService = networkService;
+		this.clientService = clientService;
 		random = new Random();
 	}
 	
-	public void run() {
+	public void start() {
 		while (true) {
 			wait(threeToSixSeconds());
-			sendToCoordinator(lockOrUnlock());
-			System.out.println(receiveFromCoordinator());
+			try {
+				sendToCoordinator(lockOrUnlock());
+			} catch (RuntimeException e) {
+				System.out.println("Coordinator is oos!");
+			}
 		}
 	}
 	
@@ -42,17 +47,13 @@ public class RandomRequestService {
 	}
 	
 	private void sendToCoordinator(String message) {
-		networkService.send(message, nodeService.getCoordinator());
+		clientService.send(message, nodeService.getCoordinator());
 	}
 	
 	private String lockOrUnlock() {
 		return random.nextBoolean()
 				? CoordinatorService.LOCK
 				: CoordinatorService.UNLOCK;
-	}
-	
-	private String receiveFromCoordinator() {
-		return networkService.receive().getMessage();
 	}
 	
 }

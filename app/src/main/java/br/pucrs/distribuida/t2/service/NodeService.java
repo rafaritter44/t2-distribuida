@@ -32,5 +32,9 @@ public class NodeService {
 				.filter(node -> node.same(host, port))
 				.findAny();
 	}
+	
+	public boolean isCoordinator() {
+		return getCoordinator().same(self.getHost(), self.getPort());
+	}
 
 }

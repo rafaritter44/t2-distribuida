@@ -4,8 +4,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import br.pucrs.distribuida.t2.module.FileModule;
-import br.pucrs.distribuida.t2.module.NetworkModule;
 import br.pucrs.distribuida.t2.module.NodeModule;
+import br.pucrs.distribuida.t2.service.CoordinatorService;
+import br.pucrs.distribuida.t2.service.RandomRequestService;
+import br.pucrs.distribuida.t2.service.ServerService;
 
 public class MainRunner {
 	
@@ -17,8 +19,12 @@ public class MainRunner {
 		String file = args[FILE];
 		Integer line = Integer.parseInt(args[LINE]);
 		NodeModule nodeModule = new NodeModule(fileModule.getFileService(), file, line);
-		NetworkModule networkModule = new NetworkModule(nodeModule.getNodeService().getSelf().getPort());
-		Injector injector = Guice.createInjector(fileModule, nodeModule, networkModule);
+		Injector injector = Guice.createInjector(fileModule, nodeModule);
+		if (nodeModule.getNodeService().isCoordinator()) {
+			injector.getInstance(CoordinatorService.class).start();
+		}
+		injector.getInstance(ServerService.class).start();
+		injector.getInstance(RandomRequestService.class).start();
 	}
 	
 }
