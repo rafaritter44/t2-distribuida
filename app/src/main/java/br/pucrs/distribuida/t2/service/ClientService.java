@@ -38,4 +38,14 @@ public class ClientService {
 		return String.format("%s:%s", node.getHost(), node.getPort());
 	}
 	
+	public void send(String message, String ip, int port) {
+		System.out.println(String.format("Sent '%s' to %s:%d", message, ip, port));
+		RSocketFactory.connect()
+				.transport(TcpClientTransport.create(ip, port))
+				.start()
+				.flatMap(rsocket -> rsocket.fireAndForget(DefaultPayload.create(message)))
+				.doOnError(e -> System.out.println(String.format("%s:%d is oos!", ip, port)))
+				.subscribe();
+	}
+	
 }

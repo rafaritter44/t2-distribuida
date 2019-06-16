@@ -16,12 +16,15 @@ public class ServerService extends AbstractRSocket {
 	private final CoordinatorService coordinatorService;
 	private final NodeService nodeService;
 	private final BullyService bullyService;
+	private final ResourceAccessService resourceAccessService;
 	
 	@Inject
-	public ServerService(CoordinatorService coordinatorService, NodeService nodeService, BullyService bullyService) {
+	public ServerService(CoordinatorService coordinatorService, NodeService nodeService,
+			BullyService bullyService, ResourceAccessService resourceAccessService) {
 		this.coordinatorService = coordinatorService;
 		this.nodeService = nodeService;
 		this.bullyService = bullyService;
+		this.resourceAccessService = resourceAccessService;
 	}
 	
 	public void start() {
@@ -51,6 +54,9 @@ public class ServerService extends AbstractRSocket {
 		}
 		if (coordinatorService.isRunning() && coordinatorService.handle(payload)) {
 			return Mono.empty();
+		}
+		if (payload.getDataUtf8().equals(CoordinatorService.GRANTED)) {
+			//FIXME resourceAccessService.access();
 		}
 		return Mono.empty();
 	}

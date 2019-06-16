@@ -1,6 +1,9 @@
 package br.pucrs.distribuida.t2.service;
 
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -19,10 +22,13 @@ public class CoordinatorService {
 	public static final String UNLOCKED = "unlocked";
 	public static final String WAS_NOT_GRANTED = "was not granted";
 	
+	private static final long TIMEOUT = 5L;
+	
 	private final NodeService nodeService;
 	private final ClientService clientService;
 	private Optional<Node> authorized;
 	private Boolean running;
+	private ScheduledFuture<?> unauthorizeAfterTimeout;
 	
 	@Inject
 	public CoordinatorService(NodeService nodeService, ClientService clientService) {
@@ -81,10 +87,17 @@ public class CoordinatorService {
 	
 	private void authorize(Node node) {
 		authorized = Optional.of(node);
+		scheduleTimeout();
+	}
+	
+	private void scheduleTimeout() {
+		unauthorizeAfterTimeout = Executors.newSingleThreadScheduledExecutor()
+				.schedule(this::unauthorize, TIMEOUT, TimeUnit.SECONDS);
 	}
 	
 	private void unauthorize() {
 		authorized = Optional.empty();
+		unauthorizeAfterTimeout.cancel(Boolean.FALSE);
 	}
 	
 	private Boolean isAuthorized(Node node) {
