@@ -35,7 +35,8 @@ public class ServerService extends AbstractRSocket {
 	
 	@Override
 	public Mono<Void> fireAndForget(Payload payload) {
-		System.out.println(String.format("Received '%s' from %s", payload.getDataUtf8(), payload.getMetadataUtf8()));
+		System.out.println(String.format("Received '%s' from node %s",
+				payload.getDataUtf8(), nodeService.getSender(payload).getId()));
 		if (payload.getDataUtf8().equals(BullyService.I_AM_COORDINATOR)) {
 			nodeService.setCoordinator(nodeService.getSender(payload));
 			return Mono.empty();
