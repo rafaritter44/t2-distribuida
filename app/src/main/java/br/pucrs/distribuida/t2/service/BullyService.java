@@ -39,6 +39,7 @@ public class BullyService {
 	
 	public void callElection() {
 		System.out.println("Calling election!");
+		nodeService.coordinatorOOS();
 		calledElection = Boolean.TRUE;
 		wonElection = Boolean.TRUE;
 		nodeService.biggerThanMe().forEach(node -> clientService.send(ELECTION, node));

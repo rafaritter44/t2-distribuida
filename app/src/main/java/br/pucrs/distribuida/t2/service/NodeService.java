@@ -15,10 +15,12 @@ public class NodeService {
 	
 	private final Node self;
 	private final List<Node> nodes;
+	private Boolean coordinatorOOS;
 	
 	public NodeService(Node self, List<Node> nodes) {
 		this.self = self;
 		this.nodes = nodes;
+		coordinatorOOS = Boolean.FALSE;
 	}
 	
 	public Node getSelf() {
@@ -31,6 +33,14 @@ public class NodeService {
 				.collect(Collectors.toList());
 	}
 	
+	public Boolean coordinatorIsOOS() {
+		return coordinatorOOS;
+	}
+	
+	public void coordinatorOOS() {
+		coordinatorOOS = Boolean.TRUE;
+	}
+	
 	public void setCoordinator(Node coordinator) {
 		unsetCoordinator();
 		nodes.stream()
@@ -39,6 +49,7 @@ public class NodeService {
 				.orElseThrow(() -> new NodeNotFoundException("New coordinator not found: %s:%s",
 						coordinator.getHost(), coordinator.getPort()))
 				.setCoordinator(Boolean.TRUE);
+		coordinatorOOS = Boolean.FALSE;
 		System.out.println(String.format("New coordinator: node %d", coordinator.getId()));
 	}
 	

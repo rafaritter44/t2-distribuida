@@ -38,6 +38,10 @@ public class ServerService extends AbstractRSocket {
 	
 	@Override
 	public Mono<Void> fireAndForget(Payload payload) {
+		return handle(payload);
+	}
+	
+	private synchronized Mono<Void> handle(Payload payload) {
 		System.out.println(String.format("Received '%s' from node %s",
 				payload.getDataUtf8(), nodeService.getSender(payload).getId()));
 		if (payload.getDataUtf8().equals(BullyService.I_AM_COORDINATOR)) {
@@ -45,6 +49,7 @@ public class ServerService extends AbstractRSocket {
 			return Mono.empty();
 		}
 		if (payload.getDataUtf8().equals(BullyService.ELECTION)) {
+			nodeService.coordinatorOOS();
 			bullyService.answerElection(payload);
 			return Mono.empty();
 		}
@@ -56,7 +61,7 @@ public class ServerService extends AbstractRSocket {
 			return Mono.empty();
 		}
 		if (payload.getDataUtf8().equals(CoordinatorService.GRANTED)) {
-			//FIXME resourceAccessService.access();
+			resourceAccessService.access();
 		}
 		return Mono.empty();
 	}
