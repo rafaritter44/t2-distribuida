@@ -24,7 +24,7 @@ public class ClientService {
 		send(message, receiver, e -> System.out.println(String.format("Node %d is oos!", receiver.getId())));
 	}
 	
-	public void send(String message, Node receiver, Consumer<? super Throwable> fallback) {
+	public synchronized void send(String message, Node receiver, Consumer<? super Throwable> fallback) {
 		System.out.println(String.format("Sent '%s' to node %d", message, receiver.getId()));
 		RSocketFactory.connect()
 				.transport(TcpClientTransport.create(receiver.getHost(), receiver.getPort()))
@@ -38,7 +38,7 @@ public class ClientService {
 		return String.format("%s:%s", node.getHost(), node.getPort());
 	}
 	
-	public void send(String message, String ip, int port) {
+	public synchronized void send(String message, String ip, int port) {
 		System.out.println(String.format("Sent '%s' to %s:%d", message, ip, port));
 		RSocketFactory.connect()
 				.transport(TcpClientTransport.create(ip, port))
